@@ -23,8 +23,8 @@ export default function XME() {
             </View>
             {/* Testo XME Card a destra */}
             <View style={tw`absolute right-0 top-2 flex-col`}>
-              <Text style={tw`text-white text-md font-bold`}>
-                XME <Text style={tw`text-white text-md`}>Card</Text>
+              <Text style={tw`text-white font-bold`}>
+                XME <Text style={tw`text-white`}>Card</Text>
               </Text>
             </View>
           </View>

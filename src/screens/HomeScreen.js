@@ -20,6 +20,7 @@ import XME from "../components/Cards/IntesaSanpaolo/XME";
 import CredemDebit from "../components/Cards/Credem/CredemDebit";
 import InfoBox from "../components/InfoBox";
 import UserData from "../components/UserData";
+import AddNewCard from "../components/Cards/AddNewCard";
 
 export default function HomeScreen() {
   return (
@@ -39,6 +40,7 @@ export default function HomeScreen() {
           <PostePayEvolution />
           <XME />
           <CredemDebit />
+          <AddNewCard />
         </ScrollView>
 
         {/**
@@ -50,6 +52,7 @@ export default function HomeScreen() {
           showsHorizontalScrollIndicator={false}
           style={tw`my-10`}
         >
+            {/* Box 1 */}
           <InfoBox
             icon={Entypo}
             iconName="megaphone"
@@ -85,6 +88,10 @@ export default function HomeScreen() {
             onPress={() => console.log("Investimento iniziato")}
           />
         </ScrollView>
+
+
+
+
 
         {/* Box che prende tutta la grandezza rimanente */}
         <View style={tw`rounded-xl bg-[${colors.secondary}]`}>

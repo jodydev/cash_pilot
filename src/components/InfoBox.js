@@ -1,10 +1,25 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import * as Notifications from 'expo-notifications';
 import tw from 'twrnc';
 
 export default function InfoBox({ icon, iconName, iconColor, bgColor, title, description, buttonText, onPress }) {
   const IconComponent = icon;
 
+  const requestPermission = async () => {
+    try {
+      // Richiedi permesso per le notifiche
+      const { status } = await Notifications.requestPermissionsAsync();
+
+      if (status === 'granted') {
+        Alert.alert('Permesso per le notifiche concesso');
+      } else {
+        Alert.alert('Permesso per le notifiche negato');
+      }
+    } catch (error) {
+      console.error('Errore nella richiesta di permesso:', error);
+      Alert.alert('Errore nella richiesta di permesso');
+    }
+  };
   return (
     <View style={tw`w-80 h-40 bg-[${bgColor}] mr-4 rounded-xl p-3`}>
       {/* Icona e Testo */}
@@ -20,7 +35,7 @@ export default function InfoBox({ icon, iconName, iconColor, bgColor, title, des
       </View>
 
       {/* Bottone */}
-      <TouchableOpacity style={tw`bg-blue-500 p-2 absolute bottom-3 left-3 w-full rounded-md`} onPress={onPress}>
+      <TouchableOpacity onPress={requestPermission} style={tw`bg-blue-500 p-2 absolute bottom-3 left-3 w-full rounded-md`} >
         <Text style={tw`text-white text-xs font-bold text-center`}>{buttonText}</Text>
       </TouchableOpacity>
     </View>

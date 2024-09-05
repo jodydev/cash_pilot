@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "JodyFy",
-    "slug": "JodyFy",
+    "jsEngine": "hermes",
+    "name": "CashPilot",
+    "slug": "CashPilot",
     "version": "1.0.0",
     "orientation": "portrait",
     "splash": {
@@ -10,7 +11,8 @@
       "backgroundColor": "#191414"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "jsEngine": "jsc"
     },
     "android": {
       "adaptiveIcon": {
