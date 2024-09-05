@@ -8,8 +8,10 @@ import RegisterScreen from "./src/screens/RegisterScreen";
 import LoginScreen from "./src/screens/LoginScreen";
 import LoaderScreen from "./src/screens/LoaderScreen";
 import HomeScreen from "./src/screens/HomeScreen";
-import * as Font from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
+import UserProfileScreen from "./src/screens/UserProfileScreen";
+import * as Font from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
+import tw from 'twrnc';
 
 
 const Stack = createStackNavigator();
@@ -70,6 +72,11 @@ export default function App() {
           <Stack.Screen
             name="HomeScreen"
             component={HomeScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="UserProfile"
+            component={UserProfileScreen}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
