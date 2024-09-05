@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "JodyFy",
+    "slug": "JodyFy",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "splash": {
+      "image": "./assets/img/loading-screen.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#191414"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/img/logo.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/img/logo.png"
+    },
+    "plugins": [
+      "expo-font"
+    ]
+  }
+}
