@@ -18,7 +18,7 @@ export default function CredemDebit() {
             <View style={tw`flex-row items-center mb-2 relative`}>
               <View style={tw`absolute left-0 top-0 p-1`}>
                 <Image
-                  source={require("../../../../assets/cards/credem-logo.png")}
+                  source={require("../../../../assets/banks/credem.png")}
                   style={tw`w-24 h-12`}
                 />
               </View>

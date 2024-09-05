@@ -40,10 +40,13 @@ export default function App() {
     return;
   }
 
+
+  const isAuthenticated = true;
+
   return (
     <FontContext.Provider value={{ fontFamily: "ARPDisplay-240" }}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Info">
+        <Stack.Navigator initialRouteName={isAuthenticated ? "HomeScreen" : "Info"}>
           <Stack.Screen
             name="Info"
             component={InfoScreen}

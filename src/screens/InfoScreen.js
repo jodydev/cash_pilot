@@ -6,13 +6,9 @@ import {
   TouchableOpacity,
 } from "react-native";
 import tw from "twrnc";
-import { useContext } from "react";
-import { FontContext } from "../context/FontContext";
 import { colors } from "../../custom-tailwind";
 
 export default function InfoScreen({ navigation }) {
-  const { fontFamily } = useContext(FontContext);
-
   return (
     <ImageBackground
       source={require("../../assets/img/bg.png")}

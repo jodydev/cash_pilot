@@ -14,7 +14,7 @@ export default function PostePayEvolution() {
         <View style={tw`flex-1 w-full relative`}>
           <View style={tw`flex-row items-center mb-2 relative`}>
             <View style={tw`flex-col`}>
-              <Text style={tw`text-yellow-400 text-3xl font-base italic`}>
+              <Text style={tw`text-yellow-400 text-3xl italic`}>
                 poste
                 <Text style={tw`text-yellow-400 text-3xl font-bold italic`}>
                   pay
@@ -43,7 +43,7 @@ export default function PostePayEvolution() {
           <Text
             style={tw`text-white text-lg font-semibold mt-2 w-full absolute bottom-0`}
           >
-            SALDO: <Text style={tw`text-yellow-400 text-lg`}>5.000,00 €</Text>
+            SALDO: <Text style={tw`text-yellow-400 text-lg`}>10.000,00 €</Text>
           </Text>
 
           {/* LOGO MASTERCARD O VISA */}

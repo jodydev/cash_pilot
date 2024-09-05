@@ -28,7 +28,7 @@ export default function LoginScreen({ navigation }) {
       </TouchableOpacity>
       {/* Logo */}
       <Image
-        source={require('../../assets/img/jodyfy-logo.png')}
+        source={require('../../assets/img/logo.png')}
         style={tw`w-40 h-40 mb-10 absolute top-5`}
         resizeMode="contain"
       />
