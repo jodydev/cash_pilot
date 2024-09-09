@@ -9,6 +9,7 @@ import LoginScreen from "./src/screens/LoginScreen";
 import LoaderScreen from "./src/screens/LoaderScreen";
 import HomeScreen from "./src/screens/HomeScreen";
 import UserProfileScreen from "./src/screens/UserProfileScreen";
+import AvvisiScreen from "./src/screens/AvvisiScreen";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import tw from 'twrnc';
@@ -78,8 +79,13 @@ export default function App() {
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="UserProfile"
+            name="UserProfileScreen"
             component={UserProfileScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="AvvisiScreen"
+            component={AvvisiScreen}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
@@ -87,3 +93,9 @@ export default function App() {
     </FontContext.Provider>
   );
 }
+
+
+
+
+
+

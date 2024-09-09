@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { colors } from "../../custom-tailwind";
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 import {
   View,
   Text,
@@ -12,7 +12,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   ScrollView,
-  Platform
+  Platform,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { launchImageLibrary } from "react-native-image-picker";
@@ -85,6 +85,7 @@ export default function UserProfileScreen() {
     );
   };
 
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -106,7 +107,7 @@ export default function UserProfileScreen() {
             <View
               style={tw`w-20 h-20 bg-gray-600 rounded-full items-center  justify-center mb-4`}
             >
-                <FontAwesome name="camera" size={24} color="white" />
+              <FontAwesome name="camera" size={24} color="white" />
             </View>
           )}
         </TouchableOpacity>
@@ -152,7 +153,9 @@ export default function UserProfileScreen() {
         />
 
         {/* Bottone per salvare */}
-        <View style={tw`flex items-center justify-center absolute bottom-10 left-0 right-0`}>
+        <View
+          style={tw`flex items-center justify-center absolute bottom-10 left-0 right-0`}
+        >
           <TouchableOpacity
             style={tw`bg-[${colors.primary}] w-full py-2 px-4 rounded-full`}
             onPress={() => navigation.navigate("HomeScreen")}

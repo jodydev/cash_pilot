@@ -7,7 +7,7 @@ export default function InfoBox({ icon, iconName, iconColor, bgColor, title, des
 
   const requestPermission = async () => {
     try {
-      // Richiedi permesso per le notifiche
+      // Richiedi permessor per le notifiche
       const { status } = await Notifications.requestPermissionsAsync();
 
       if (status === 'granted') {

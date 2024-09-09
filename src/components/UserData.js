@@ -14,9 +14,7 @@ export default function UserData() {
 
         <View style={tw`flex-row items-center`}>
           {/* Avatar */}
-          <TouchableOpacity
-            onPress={() => navigation.navigate("UserProfile")} // Naviga alla schermata UserProfile
-          >
+          <TouchableOpacity onPress={() => navigation.navigate("UserProfileScreen")}>
             <View style={tw`relative`}>
               <Image
                 source={require("../../assets/img/avatar.jpeg")}
@@ -27,7 +25,10 @@ export default function UserData() {
 
           {/* Icona campanello */}
           <View style={tw`relative`}>
-            <TouchableOpacity style={tw`mx-4`}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("AvvisiScreen")}
+              style={tw`mx-4`}
+            >
               <Feather name="bell" size={30} color="white" />
             </TouchableOpacity>
 

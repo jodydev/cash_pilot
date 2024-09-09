@@ -1,12 +1,12 @@
 import React from "react";
 import { Dimensions } from "react-native";
 import { LineChart } from "react-native-chart-kit";
-import { colors } from "../../custom-tailwind";
+import { colors } from "../../../custom-tailwind";
 import { View, Text } from "react-native";
 import tw from "twrnc";
 import Feather from "react-native-vector-icons/Feather";
 
-export default function GraficChart() {
+export default function LineCharts() {
   return (
     <View style={tw`rounded-xl bg-[${colors.secondary}]`}>
       <Text style={tw`text-white text-xl font-bold p-4`}>
