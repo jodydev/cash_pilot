@@ -1,13 +1,5 @@
-import { colors } from "../../custom-tailwind";
-import {
-  View,
-  Text,
-  ImageBackground,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { useState, useEffect } from "react";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import tw from "twrnc";
 import Feather from "@expo/vector-icons/Feather";
 import Entypo from "@expo/vector-icons/Entypo";
@@ -21,193 +13,198 @@ import UserData from "../components/UserData";
 import AddNewCard from "../components/Cards/AddNewCard";
 import LineChart from "../components/Charts/LineChart";
 import ProgressChart from "../components/Charts/ProgressChart";
-import axios from 'axios';
-import { authorize } from "react-native-app-auth"; 
-import { useState } from "react";
-import { Alert } from "react-native";
+import { colors } from "../../custom-tailwind";
 
+// Dati per Salt Edge
+const SALT_EDGE_URL = 'https://www.saltedge.com/api/v5';
+const CLIENT_ID = 'k32PvQB6Nmzia7-aI0fbidbNOoAqyJCLq3uxizUhfd8';
+const CLIENT_SECRET = 'f5IkEyldnHd_cJ5afw57A_nJO1e0M_CmlXF_7yc9-_w';
+const CUSTOMER_ID = "222222222222222222";
+
+// Funzione per effettuare richieste HTTP
+async function request(url, options = {}) {
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        'App-id': CLIENT_ID,
+        'Secret': CLIENT_SECRET,
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error_message || 'Unknown error');
+    }
+    return data;
+  } catch (error) {
+    console.error('Request Error:', error);
+    throw error;
+  }
+}
 
 export default function HomeScreen() {
+  const [balance, setBalance] = useState(null);
+  const [connectUrl, setConnectUrl] = useState(null);
+  const [error, setError] = useState(null);
 
-  const config = {
-    issuer: "https://auth.truelayer-sandbox.com/",
-    clientId: "sandbox-cashpilot-b3ec3e",
-    redirectUrl: "https://console.truelayer.com/redirect-page", // Assicurati che sia corretto
-    scopes: ["info", "accounts", "balance", "transactions"],
-    additionalParameters: {},
-    serviceConfiguration: {
-      authorizationEndpoint: "https://auth.truelayer-sandbox.com/",
-      tokenEndpoint: "https://auth.truelayer-sandbox.com/connect/token",
-    },
-  };
-
-  const [accessToken, setAccessToken] = useState(null);
-  const [accountData, setAccountData] = useState(null);
-
-  // Funzione per gestire l'autenticazione con TrueLayer
-  const handleLogin = async () => {
+  useEffect(() => {
+    // Solo se necessario, altrimenti rimuovi questa chiamata
+    authenticate();
+  }, []);
+  
+  // Funzione per autenticare l'utente
+  async function authenticate() {
     try {
-      const result = await authorize(config);
-      setAccessToken(result.accessToken);
-      console.log("Access Token:", result.accessToken);
-      fetchAccountData(result.accessToken);
-      console.log("Dati del conto:", accountData);
-    } catch (error) {
-      console.error("Errore durante l'autenticazione:", error);
-      Alert.alert("Errore", "Impossibile connettersi a TrueLayer");
+      const response = await request(`${SALT_EDGE_URL}/connect_sessions/create`, {
+        method: "POST",
+        body: JSON.stringify({
+          client_id: CLIENT_ID,
+          client_secret: CLIENT_SECRET,
+        }),
+      });
+  
+      console.log('Authenticated:', response);
+    } catch (err) {
+      console.error('Authentication Error:', err);
+      setError("Errore di autenticazione");
     }
-  };
+  }
 
-  // Funzione per recuperare i dati del conto bancario
-  const fetchAccountData = async (token) => {
+  // Funzione per creare la connessione e ottenere l'URL del widget
+  async function createConnection() {
     try {
-      const response = await fetch(
-        "https://api.truelayer-sandbox.com/data/v1/accounts",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const data = await response.json();
-      setAccountData(data.results);
-      console.log("Dati del conto:", data);
-    } catch (error) {
-      console.error("Errore nel recupero dei dati del conto:", error);
-      Alert.alert("Errore", "Impossibile recuperare i dati del conto");
+      const response = await request(`${SALT_EDGE_URL}/connect_sessions/create`, {
+        method: "POST",
+        body: JSON.stringify({
+          client_id: CLIENT_ID,
+          client_secret: CLIENT_SECRET,
+          country_code: 'IT',
+          provider_code: 'your_bank_code',  // Sostituisci con il codice della tua banca
+        }),
+      });
+
+      setConnectUrl(response.data.connect_url);
+      if (response.data.connection_id) {
+        await getBalances(response.data.connection_id); // Ottieni il saldo dopo la connessione
+      } else {
+        setError("ID connessione mancante");
+      }
+    } catch (err) {
+      console.error('Connection Error:', err);
+      setError("Errore di connessione con la banca");
     }
-  };
+  }
 
+  // Funzione per ottenere il saldo
+  async function getBalances(connection_id) {
+    try {
+      const response = await request(`${SALT_EDGE_URL}/accounts`, {
+        method: "GET",
+        headers: {
+          'Connection-id': connection_id,
+        },
+      });
 
-// const getBalance = async (accessToken, accountId) => {
-//   try {
-//     const response = await axios.get(
-//       `https://api.truelayer-sandbox.com/data/v1/accounts/${accountId}/balance`,
-//       {
-//         headers: {
-//           Authorization: `Bearer ${accessToken}`,
-//         },
-//       }
-//     );
-//     console.log('Saldo:', response.data);
-//   } catch (error) {
-//     console.error('Errore nel recupero del saldo:', error);
-//   }
-// };
+      if (response.accounts && response.accounts.length > 0) {
+        setBalance(response.accounts[0].balance); // Memorizza il saldo del primo conto
+      } else {
+        setError("Nessun conto trovato");
+      }
+    } catch (err) {
+      console.error('Balance Error:', err);
+      setError("Errore nel recupero del saldo");
+    }
+  }
 
+  return (
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      showsHorizontalScrollIndicator={false}
+      style={tw`flex-1 bg-black`}
+    >
+      <UserData />
 
-// const getTransactions = async (accessToken, accountId) => {
-//   try {
-//     const response = await axios.get(
-//       `https://api.truelayer-sandbox.com/data/v1/accounts/${accountId}/transactions`,
-//       {
-//         headers: {
-//           Authorization: `Bearer ${accessToken}`,
-//         },
-//       }
-//     );
-//     console.log('Transazioni:', response.data);
-//   } catch (error) {
-//     console.error('Errore nel recupero delle transazioni:', error);
-//   }
-// };
+      <View style={tw`flex-1 px-3 mt-5 mb-10`}>
+        {/* Scorrimento delle carte */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <PostePayEvolution />
+          <XME />
+          <CredemDebit />
+          <AddNewCard />
+        </ScrollView>
 
-
-return (
-  <ScrollView
-    showsVerticalScrollIndicator={false}
-    showsHorizontalScrollIndicator={false}
-    style={tw`flex-1 bg-black`}
-  >
-    <UserData />
-
-    <View style={tw`flex-1 px-3 mt-5 mb-10`}>
-      {/* Scorrimento delle carte */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <PostePayEvolution />
-        <XME />
-        <CredemDebit />
-        <AddNewCard />
-      </ScrollView>
-
-      {/* Sezione Informativa */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={tw`my-10`}>
-
-      <View style={tw`w-80 h-40 mr-4 rounded-xl p-3`}>
-      {/* Icona e Testo */}
-      <View style={tw`flex-row items-center mb-4 `}>
-        <View style={tw`w-[30%] h-[90%] rounded-xl items-center justify-center mr-3`}>
+        {/* Bottone per ottenere il saldo */}
+        <View style={tw`w-80 h-40 mr-4 rounded-xl p-3`}>
+          <TouchableOpacity
+            style={tw`bg-blue-500 p-2 w-full rounded-md`}
+            onPress={createConnection}
+          >
+            <Text style={tw`text-white text-center`}>Get Balance</Text>
+          </TouchableOpacity>
+          {balance !== null && <Text style={tw`text-white text-center mt-2`}>Balance: {balance} €</Text>}
+          {error && <Text style={tw`text-red-500 text-center mt-2`}>{error}</Text>}
         </View>
-        {/* Testo */}
-        <View style={tw`flex-1`}>
-          <Text style={tw`text-white text-xs font-bold mb-1`}></Text>
-          <Text style={tw`text-white text-xs`}></Text>
-        </View>
-      </View>
 
-      {/* Bottone */}
-      <TouchableOpacity onPress={handleLogin} style={tw`bg-blue-500 p-2 absolute bottom-3 left-3 w-full rounded-md`} >
-        <Text style={tw`text-white text-xs font-bold text-center`}>test</Text>
-      </TouchableOpacity>
-    </View>
+        {/* Sezione Informativa */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={tw`my-10`}>
+          <InfoBox
+            icon={Entypo}
+            iconName="megaphone"
+            iconColor="bg-red-500"
+            bgColor="#1e1e1e"
+            title="Sblocca i vantaggi di un conto corrente online con la nostra App!"
+            description="Non perderti gli ultimi aggiornamenti."
+            buttonText="Attiva Notifiche"
+            onPress={() => console.log("Notifiche attivate")}
+          />
 
-        <InfoBox
-          icon={Entypo}
-          iconName="megaphone"
-          iconColor="bg-red-500"
-          bgColor="#1e1e1e"
-          title="Sblocca i vantaggi di un conto corrente online con la nostra App!"
-          description="Non perderti gli ultimi aggiornamenti."
-          buttonText="Attiva Notifiche"
-          onPress={() => console.log("Notifiche attivate")}
-        />
+          <InfoBox
+            icon={MaterialCommunityIcons}
+            iconName="transit-connection-variant"
+            iconColor="bg-green-500"
+            bgColor="#1e1e1e"
+            title="Connetti i tuoi conti bancari e monitora le tue spese."
+            description="Ricevi notifiche in tempo reale, un monitoraggio completo."
+            buttonText="Connetti Conti"
+            onPress={createConnection} // Usa createConnection qui
+          />
 
-        {/* InfoBox aggiornato con il login TrueLayer */}
-        <InfoBox
-          icon={MaterialCommunityIcons}
-          iconName="transit-connection-variant"
-          iconColor="bg-green-500"
-          bgColor="#1e1e1e"
-          title="Connetti i tuoi conti bancari e monitora le tue spese."
-          description="Ricevi notifiche in tempo reale, un monitoraggio completo."
-          buttonText={accessToken ? "Conti Connessi" : "Connetti Conti"}
-          onPress={handleLogin}
-        />
+          <InfoBox
+            icon={FontAwesome6}
+            iconName="bitcoin"
+            iconColor="bg-yellow-500"
+            bgColor="#1e1e1e"
+            title="Inizia a investire in criptovalute con il nostro servizio di trading."
+            description="Scopri le ultime novità, investi in sicurezza."
+            buttonText="Investi Ora"
+            onPress={() => console.log("Investimento iniziato")}
+          />
+        </ScrollView>
 
-        <InfoBox
-          icon={FontAwesome6}
-          iconName="bitcoin"
-          iconColor="bg-yellow-500"
-          bgColor="#1e1e1e"
-          title="Inizia a investire in criptovalute con il nostro servizio di trading."
-          description="Scopri le ultime novità, investi in sicurezza."
-          buttonText="Investi Ora"
-          onPress={() => console.log("Investimento iniziato")}
-        />
-      </ScrollView>
+        {/* Sezione Grafico */}
+        <LineChart />
 
-      {/* Sezione Grafico */}
-      <LineChart />
+        {/* Sezione Bilancio */}
+        <View style={tw`rounded-xl bg-[${colors.secondary}] my-10`}>
+          <Text style={tw`text-white text-xl font-bold p-4`}>Bilancio</Text>
+          <View style={tw`h-0.5 w-full bg-gray-500`} />
 
-      {/* Sezione Bilancio */}
-      <View style={tw`rounded-xl bg-[${colors.secondary}] my-10`}>
-        <Text style={tw`text-white text-xl font-bold p-4`}>Bilancio</Text>
-        <View style={tw`h-0.5 w-full bg-gray-500`} />
-
-        <View style={tw`flex items-start justify-start p-4`}>
-          <Text style={tw`text-gray-500 text-lg uppercase`}>Oggi</Text>
-          <View style={tw`flex-row items-center`}>
-            <Text style={tw`text-white font-bold text-2xl`}>5.000,00 €</Text>
-            <Feather name="trending-up" size={24} color="green" style={tw`mx-2`} />
+          <View style={tw`flex items-start justify-start p-4`}>
+            <Text style={tw`text-gray-500 text-lg uppercase`}>Oggi</Text>
+            <View style={tw`flex-row items-center`}>
+              <Text style={tw`text-white font-bold text-2xl`}>5.000,00 €</Text>
+              <Feather name="trending-up" size={24} color="green" style={tw`mx-2`} />
+            </View>
+          </View>
+          <View style={tw`flex-row items-start justify-end p-4`}>
+            <Text style={tw`text-blue-500 text-lg font-bold`}>Scopri di più</Text>
           </View>
         </View>
-        <View style={tw`flex-row items-start justify-end p-4`}>
-          <Text style={tw`text-blue-500 text-lg font-bold`}>Scopri di più</Text>
-        </View>
-      </View>
 
-      <ProgressChart />
-    </View>
-  </ScrollView>
-);
+        <ProgressChart />
+      </View>
+    </ScrollView>
+  );
 }

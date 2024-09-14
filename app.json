@@ -1,6 +1,6 @@
 {
   "expo": {
-    "jsEngine": "hermes",
+    "jsEngine": "jsc",
     "name": "CashPilot",
     "slug": "CashPilot",
     "version": "1.0.0",
@@ -12,19 +12,20 @@
     },
     "ios": {
       "supportsTablet": true,
-      "jsEngine": "jsc"
+      "jsEngine": "hermes"  // Abilita Hermes per iOS
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/img/logo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "jsEngine": "hermes"  // Abilita Hermes per Android
     },
     "web": {
       "favicon": "./assets/img/logo.png"
     },
-    "plugins": [
-      "expo-font"
-    ]
+    "plugins": ["expo-font"],
+    "scheme": "cashpilot" 
   }
 }
+

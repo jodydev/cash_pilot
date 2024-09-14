@@ -67,23 +67,23 @@ export default function UserProfileScreen() {
   }
 
   // Funzione per scegliere l'immagine del profilo
-  const pickImage = () => {
-    launchImageLibrary(
-      {
-        mediaType: "photo",
-        quality: 1,
-      },
-      (response) => {
-        if (response.didCancel) {
-          console.log("User cancelled image picker");
-        } else if (response.errorCode) {
-          console.log("ImagePicker Error: ", response.errorMessage);
-        } else {
-          setProfileImage(response.assets[0].uri); // Usa URI dell'immagine
-        }
-      }
-    );
-  };
+  // const pickImage = () => {
+  //   launchImageLibrary(
+  //     {
+  //       mediaType: "photo",
+  //       quality: 1,
+  //     },
+  //     (response) => {
+  //       if (response.didCancel) {
+  //         console.log("User cancelled image picker");
+  //       } else if (response.errorCode) {
+  //         console.log("ImagePicker Error: ", response.errorMessage);
+  //       } else {
+  //         setProfileImage(response.assets[0].uri); // Usa URI dell'immagine
+  //       }
+  //     }
+  //   );
+  // };
 
 
   return (
@@ -97,7 +97,8 @@ export default function UserProfileScreen() {
         </Text>
 
         {/* Immagine del profilo */}
-        <TouchableOpacity onPress={pickImage}>
+        {/* <TouchableOpacity onPress={pickImage}> */}
+        <TouchableOpacity>
           {profileImage ? (
             <Image
               source={{ uri: profileImage }}
