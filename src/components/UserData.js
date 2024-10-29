@@ -43,7 +43,7 @@ export default function UserData() {
       </View>
 
       <Text style={tw`text-[${colors.primary}] font-bold text-4xl ml-3`}>
-        Andreea
+        Jody
       </Text>
     </View>
   );

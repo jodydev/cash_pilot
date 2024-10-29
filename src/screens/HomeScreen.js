@@ -136,7 +136,7 @@ export default function HomeScreen() {
         </ScrollView>
 
         {/* Bottone per ottenere il saldo */}
-        <View style={tw`w-80 h-40 mr-4 rounded-xl p-3`}>
+        {/* <View style={tw`w-80 h-40 mr-4 rounded-xl p-3`}>
           <TouchableOpacity
             style={tw`bg-blue-500 p-2 w-full rounded-md`}
             onPress={createConnection}
@@ -145,7 +145,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
           {balance !== null && <Text style={tw`text-white text-center mt-2`}>Balance: {balance} €</Text>}
           {error && <Text style={tw`text-red-500 text-center mt-2`}>{error}</Text>}
-        </View>
+        </View> */}
 
         {/* Sezione Informativa */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={tw`my-10`}>

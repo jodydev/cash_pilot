@@ -23,7 +23,7 @@ import axios from "axios";
 
 export default function UserProfileScreen() {
   const navigation = useNavigation();
-  const [name, setName] = useState("Andreaa");
+  const [name, setName] = useState("Jody");
   const [surname, setSurname] = useState("Vlasie");
   const [address, setAddress] = useState("Via Roma 1");
   const [profileImage, setProfileImage] = useState(null);
